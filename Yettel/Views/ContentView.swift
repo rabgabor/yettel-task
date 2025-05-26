@@ -31,7 +31,7 @@ struct ContentView: View {
                 if !viewModel.countyVignetteOptions.isEmpty {
                     Section {
                         NavigationLink("Éves vármegyei matricák") {
-                            Text("Megyei matrica képernyő")
+                            CountySelectionView(viewModel: CountySelectionViewModel(options: viewModel.countyVignetteOptions))
                         }
                     }
                 }

@@ -49,15 +49,19 @@ extension VehicleViewModel {
     }
     
     private static func makeCounty(from response: HighwayInfoResponse) -> [CountyVignetteOption] {
-        response.payload.highwayVignettes
-            .filter { $0.vignetteType.first?.rawValue.hasPrefix("YEAR_") ?? false }
-            .compactMap { v -> CountyVignetteOption? in
-                guard let countyID = v.vignetteType.first,
-                      let countyName = response.payload.counties.first(where: { $0.id.rawValue == countyID.rawValue })?.name else {
-                    return nil
-                }
-                
-                return CountyVignetteOption.from(v, countyName: countyName)
+        guard let countyVignette = response.payload.highwayVignettes.first(where: { $0.vignetteType.first?.rawValue.hasPrefix("YEAR_") ?? false }) else {
+            return []
+        }
+        
+        return countyVignette.vignetteType.compactMap { id in
+            guard let countyName = response.payload.counties.first(where: { $0.id.rawValue == id.rawValue })?.name else {
+                return nil
             }
+            
+            return CountyVignetteOption.from(countyVignette,
+                                             countyName: countyName,
+                                             overrideID: id.rawValue)
+        }
+        .sorted { $0.countyName < $1.countyName }
     }
 }
