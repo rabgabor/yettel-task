@@ -1,45 +1,71 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    @State private var response: VehicleInfoResponse?
-    @State private var errorMessage: String?
-    
-    private let api = HighwayAPIClient()
+    @StateObject private var viewModel = VehicleViewModel()
+    @State private var selectedID: String?
 
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            
-            if let response = response {
-                Text(response.name)
-                Text(response.plate)
-            } else if let errorMessage {
-                Text("Error: \(errorMessage)")
-                    .foregroundStyle(.red)
-            } else {
-                ProgressView("Loading…")
+        NavigationStack {
+            List {
+                if let vehicleSummary = viewModel.vehicleSummary {
+                    Section { VehicleSummaryRow(vehicleSummary: vehicleSummary) }
+                }
+                
+                if !viewModel.nationalVignetteOptions.isEmpty {
+                    Section(header: Text("Országos matricák")) {
+                        ForEach(viewModel.nationalVignetteOptions, id: \.id) { vignette in
+                            VignetteSelectRow(nationalVignetteOption: vignette, isSelected: selectedID == vignette.id)
+                                .onTapGesture {
+                                    selectedID = vignette.id
+                                }
+                        }
+                        
+                        if let sel = selectedID, let selected = viewModel.nationalVignetteOptions.first(where: { $0.id == sel }) {
+                            NavigationLink("Vásárlás") {
+                                Text("Vásárlás képernyő")
+                            }
+                        }
+                    }
+                }
+                
+                if !viewModel.countyVignetteOptions.isEmpty {
+                    Section {
+                        NavigationLink("Éves vármegyei matricák") {
+                            Text("Megyei matrica képernyő")
+                        }
+                    }
+                }
+                
+                if let err = viewModel.errorMessage {
+                    Section { Text("Hiba: \(err)").foregroundStyle(.red) }
+                }
             }
-        }
-        .padding()
-        .task {
-            await fetchVehicleInfo()
+            .listStyle(.insetGrouped)
+            .navigationTitle("E-matrica")
+            .navigationBarTitleDisplayMode(.large)
+            .task {
+                guard !viewModel.hasLoaded else { return }
+                await load()
+            }
+            .overlay {
+                if !viewModel.hasLoaded {
+                    ZStack {
+                        Color(.systemBackground).opacity(0.6)
+                        ProgressView().scaleEffect(1.4)
+                    }
+                    .ignoresSafeArea()
+                }
+            }
         }
     }
     
-    private func fetchVehicleInfo() async {
-        do {
-            let info = try await api.fetchVehicleInfo()
-            response = info
-        } catch {
-            print("Error: \(error)")
-            errorMessage = error.localizedDescription
-        }
+    private func load() async {
+        await viewModel.load()
+        selectedID = viewModel.defaultOptionID
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(VehicleViewModel(api: MockHighwayService()))
 }

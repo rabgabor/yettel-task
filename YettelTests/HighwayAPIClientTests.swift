@@ -2,10 +2,6 @@ import XCTest
 @testable import Yettel
 
 final class HighwayAPIClientTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-    }
 
     func testFetchHighwayInfo_decodesPayload() async throws {
         let mock = MockHTTPClient(nextData: .highwayInfo)
@@ -58,12 +54,10 @@ final class HighwayAPIClientTests: XCTestCase {
     }
 }
 
-func XCTAssertThrowsErrorAsync(
-    _ expression: @escaping () async throws -> Void,
-    verify: (Error) -> Void,
-    file: StaticString = #filePath,
-    line: UInt = #line
-) async {
+func XCTAssertThrowsErrorAsync(_ expression: @escaping () async throws -> Void,
+                               verify: (Error) -> Void,
+                               file: StaticString = #filePath,
+                               line: UInt = #line) async {
     do {
         try await expression()
         XCTFail("Expected error was not thrown", file: file, line: line)
