@@ -42,6 +42,7 @@ final class VehicleViewModel: ObservableObject {
             countyVignetteOptions = Self.makeCounty(from: highway)
             
             currentlySelectedNationalVignetteOptionID = defaultOptionID
+            errorMessage = nil
         } catch {
             errorMessage = error.localizedDescription
         }
