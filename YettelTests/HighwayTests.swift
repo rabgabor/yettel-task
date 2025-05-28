@@ -35,13 +35,13 @@ final class HighwayTests: XCTestCase {
     
     @MainActor
     func testLoadPopulatesState() async throws {
-        let vm = VehicleViewModel(api: MockHighwayService())
+        let viewModel = VehicleViewModel(api: MockHighwayService())
         
-        await vm.load()
+        await viewModel.load()
         
-        XCTAssertEqual(vm.vehicleSummary?.plate, "ABC-123")
-        XCTAssertEqual(vm.nationalVignetteOptions.count, 1)
-        XCTAssertEqual(vm.countyVignetteOptions.first?.countyName, "Bács-Kiskun")
+        XCTAssertEqual(viewModel.vehicleSummary?.plate, "ABC-123")
+        XCTAssertEqual(viewModel.nationalVignetteOptions.count, 1)
+        XCTAssertEqual(viewModel.countyVignetteOptions.first?.countyName, "Bács-Kiskun")
     }
     
     func testCountyVignetteMapping() {
@@ -63,12 +63,12 @@ final class HighwayTests: XCTestCase {
     @MainActor
     func testCountySelectionViewModel() {
         let options: [CountyVignetteOption] = [
-            .init(id: "YEAR_11", countyName: "Bács-Kiskun", price: "9 000 Ft"),
-            .init(id: "YEAR_12", countyName: "Baranya", price: "9 000 Ft"),
-            .init(id: "YEAR_13", countyName: "Békés", price: "9 000 Ft")
+            .init(id: "YEAR_11", countyName: "Bács-Kiskun", sum: 9000, trxFee: 0, vehicleCategory: "CAR"),
+            .init(id: "YEAR_12", countyName: "Baranya", sum: 9000, trxFee: 0, vehicleCategory: "CAR"),
+            .init(id: "YEAR_13", countyName: "Békés", sum: 9000, trxFee: 0, vehicleCategory: "CAR")
         ]
 
-        let viewModel = CountySelectionViewModel(options: options)
+        let viewModel = CountySelectionViewModel(options: options, plate: "ABC-123")
 
         XCTAssertFalse(viewModel.hasIsolatedSelection)
         XCTAssertEqual(viewModel.totalPrice, 0)

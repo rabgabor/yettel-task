@@ -5,12 +5,15 @@ final class CountySelectionViewModel: ObservableObject {
     @Published private(set) var options: [CountyVignetteOption]
     @Published var selectedIDs: Set<String> = []
     
+    let plate: String
+    
     var hasIsolatedSelection = false
     var totalPrice = 0
     var totalPriceText = priceString(0.0)
     
-    init(options: [CountyVignetteOption]) {
+    init(options: [CountyVignetteOption], plate: String) {
         self.options = options
+        self.plate = plate
     }
 
     func toggle(_ id: String) {

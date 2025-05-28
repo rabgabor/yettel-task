@@ -1,4 +1,4 @@
 struct HighwayOrderResponse: Codable {
     let statusCode: StatusCode
-    let receivedOrders: [HighwayOrderRequest.Order]
+    let receivedOrders: [Order]
 }

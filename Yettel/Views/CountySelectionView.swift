@@ -69,8 +69,15 @@ private extension CountySelectionView {
                 Spacer()
                 Text(viewModel.totalPriceText).bold()
             }
-            NavigationLink("Vásárlás") {
-                Text("Vásárlás képernyő")
+            NavigationLink("Tovább a vásárláshoz") {
+                PurchaseView(
+                    viewModel: PurchaseViewModel(plate: viewModel.plate,
+                                                 vignetteTypeText: "Éves vármegyei",
+                                                 selectedVignettes: viewModel.selectedIDs
+                        .compactMap { id in
+                            viewModel.options.first { $0.id == id }
+                        })
+                )
             }
             .disabled(viewModel.selectedIDs.isEmpty)
             .opacity(viewModel.selectedIDs.isEmpty ? 0.4 : 1)
@@ -80,31 +87,31 @@ private extension CountySelectionView {
 
 #if DEBUG
 private let sampleCountyOptions: [CountyVignetteOption] = [
-    CountyVignetteOption(id: "YEAR_11", countyName: "Bács-Kiskun", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_12", countyName: "Baranya", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_13", countyName: "Békés", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_14", countyName: "Borsod-Abaúj-Zemplén", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_15", countyName: "Csongrád", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_16", countyName: "Fejér", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_17", countyName: "Győr-Moson-Sopron", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_18", countyName: "Hajdú-Bihar", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_19", countyName: "Heves", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_20", countyName: "Jász-Nagykun-Szolnok", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_21", countyName: "Komárom-Esztergom", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_22", countyName: "Nógrád", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_23", countyName: "Pest", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_24", countyName: "Somogy", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_25", countyName: "Szabolcs-Szatmár-Bereg", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_26", countyName: "Tolna", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_27", countyName: "Vas", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_28", countyName: "Veszprém", price: "9 000 Ft"),
-    CountyVignetteOption(id: "YEAR_29", countyName: "Zala", price: "9 000 Ft"),
+    CountyVignetteOption(id: "YEAR_11", countyName: "Bács-Kiskun", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_12", countyName: "Baranya", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_13", countyName: "Békés", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_14", countyName: "Borsod-Abaúj-Zemplén", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_15", countyName: "Csongrád", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_16", countyName: "Fejér", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_17", countyName: "Győr-Moson-Sopron", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_18", countyName: "Hajdú-Bihar", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_19", countyName: "Heves", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_20", countyName: "Jász-Nagykun-Szolnok", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_21", countyName: "Komárom-Esztergom", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_22", countyName: "Nógrád", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_23", countyName: "Pest", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_24", countyName: "Somogy", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_25", countyName: "Szabolcs-Szatmár-Bereg", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_26", countyName: "Tolna", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_27", countyName: "Vas", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_28", countyName: "Veszprém", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
+    CountyVignetteOption(id: "YEAR_29", countyName: "Zala", sum: 9000.0, trxFee: 0.0, vehicleCategory: "CAR"),
 ]
 
 struct CountySelectionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            CountySelectionView(viewModel: CountySelectionViewModel(options: sampleCountyOptions))
+            CountySelectionView(viewModel: CountySelectionViewModel(options: sampleCountyOptions, plate: "ABC-123"))
         }
     }
 }

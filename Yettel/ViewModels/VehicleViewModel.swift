@@ -6,22 +6,31 @@ final class VehicleViewModel: ObservableObject {
     @Published var nationalVignetteOptions: [NationalVignetteOption] = []
     @Published var countyVignetteOptions: [CountyVignetteOption] = []
     @Published var errorMessage: String?
+    @Published var currentlySelectedNationalVignetteOptionID: String?
     
     var defaultOptionID: String? {
         nationalVignetteOptions.first?.id
     }
     
+    var currentlySelectedNationalVignetteOption: NationalVignetteOption? {
+        nationalVignetteOptions.first(where: { $0.id == currentlySelectedNationalVignetteOptionID })
+    }
+    
     private let api: HighwayAPIService
-    private(set) var hasLoaded = false
+    private(set) var initialFetch = true
     
     init(api: HighwayAPIService = HighwayAPIClient()) {
         self.api = api
     }
     
-    func load() async {
-        guard !hasLoaded else { return }
-        hasLoaded = true
+    func initialLoad() async {
+        guard initialFetch else { return }
+        initialFetch = false
         
+        await load()
+    }
+    
+    func load() async {
         do {
             async let vehicleResponse  = api.fetchVehicleInfo()
             async let highwayResponse  = api.fetchHighwayInfo()
@@ -31,13 +40,13 @@ final class VehicleViewModel: ObservableObject {
             vehicleSummary = VehicleSummary(response: vehicle)
             nationalVignetteOptions = Self.makeNational(from: highway)
             countyVignetteOptions = Self.makeCounty(from: highway)
+            
+            currentlySelectedNationalVignetteOptionID = defaultOptionID
         } catch {
             errorMessage = error.localizedDescription
         }
     }
-}
-
-extension VehicleViewModel {
+    
     private static func makeNational(from response: HighwayInfoResponse) -> [NationalVignetteOption] {
         let codeLookup = Dictionary(uniqueKeysWithValues: response.payload.vehicleCategories.map { ($0.category, $0.vignetteCategory.rawValue) })
         

@@ -29,14 +29,14 @@ final class HighwayAPIClientTests: XCTestCase {
         let mock = MockHTTPClient(nextData: .orderAccepted)
         let api  = HighwayAPIClient(baseURL: URL(string: "http://test.local")!, http: mock)
 
-        let orders = [HighwayOrderRequest.Order(type: .day, category: .car, cost: 5000.0),
-                      HighwayOrderRequest.Order(type: .week, category: .car, cost: 900.0)]
+        let orders = [Order(type: .day, category: .car, cost: 5000.0),
+                      Order(type: .week, category: .car, cost: 900.0)]
         
         let ordered = try await api.placeHighwayOrder(HighwayOrderRequest(highwayOrders: orders))
 
         XCTAssertEqual(ordered.receivedOrders.count, 2)
         XCTAssertEqual(mock.lastRequest?.httpMethod, "POST")
-        XCTAssertNotNil(mock.lastRequest?.httpBody)     // we sent JSON
+        XCTAssertNotNil(mock.lastRequest?.httpBody)
     }
     
     func test_non2xxStatus_throws() async {

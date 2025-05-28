@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = VehicleViewModel()
-    @State private var selectedID: String?
 
     var body: some View {
         NavigationStack {
@@ -14,15 +13,18 @@ struct ContentView: View {
                 if !viewModel.nationalVignetteOptions.isEmpty {
                     Section(header: Text("Országos matricák")) {
                         ForEach(viewModel.nationalVignetteOptions, id: \.id) { vignette in
-                            VignetteSelectRow(nationalVignetteOption: vignette, isSelected: selectedID == vignette.id)
+                            VignetteSelectRow(nationalVignetteOption: vignette, isSelected: viewModel.currentlySelectedNationalVignetteOptionID == vignette.id)
                                 .onTapGesture {
-                                    selectedID = vignette.id
+                                    viewModel.currentlySelectedNationalVignetteOptionID = vignette.id
                                 }
                         }
                         
-                        if let sel = selectedID, let selected = viewModel.nationalVignetteOptions.first(where: { $0.id == sel }) {
-                            NavigationLink("Vásárlás") {
-                                Text("Vásárlás képernyő")
+                        if viewModel.currentlySelectedNationalVignetteOptionID != nil {
+                            NavigationLink("Tovább a vásárláshoz") {
+                                PurchaseView(viewModel: PurchaseViewModel(plate: viewModel.vehicleSummary?.plate ?? "",
+                                                                          vignetteTypeText: "Országos",
+                                                                          selectedVignettes: [viewModel.currentlySelectedNationalVignetteOption!])
+                                )
                             }
                         }
                     }
@@ -31,7 +33,8 @@ struct ContentView: View {
                 if !viewModel.countyVignetteOptions.isEmpty {
                     Section {
                         NavigationLink("Éves vármegyei matricák") {
-                            CountySelectionView(viewModel: CountySelectionViewModel(options: viewModel.countyVignetteOptions))
+                            CountySelectionView(viewModel: CountySelectionViewModel(options: viewModel.countyVignetteOptions,
+                                                                                    plate: viewModel.vehicleSummary?.plate ?? ""))
                         }
                     }
                 }
@@ -44,11 +47,13 @@ struct ContentView: View {
             .navigationTitle("E-matrica")
             .navigationBarTitleDisplayMode(.large)
             .task {
-                guard !viewModel.hasLoaded else { return }
-                await load()
+                await viewModel.initialLoad()
+            }
+            .refreshable {
+                await viewModel.load()
             }
             .overlay {
-                if !viewModel.hasLoaded {
+                if viewModel.initialFetch {
                     ZStack {
                         Color(.systemBackground).opacity(0.6)
                         ProgressView().scaleEffect(1.4)
@@ -57,11 +62,6 @@ struct ContentView: View {
                 }
             }
         }
-    }
-    
-    private func load() async {
-        await viewModel.load()
-        selectedID = viewModel.defaultOptionID
     }
 }
 
