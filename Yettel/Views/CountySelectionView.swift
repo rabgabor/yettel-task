@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CountySelectionView: View {
-    @StateObject var viewModel: CountySelectionViewModel
+    @State var viewModel: CountySelectionViewModel
 
     var body: some View {
         List {

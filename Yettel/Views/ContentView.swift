@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = VehicleViewModel()
+    @State private var viewModel = VehicleViewModel()
 
     var body: some View {
         NavigationStack {
@@ -67,5 +67,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(VehicleViewModel(api: MockHighwayService()))
+        .environment(VehicleViewModel(api: MockHighwayService()))
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PurchaseView: View {
-    @StateObject var viewModel: PurchaseViewModel
+    @State var viewModel: PurchaseViewModel
 
     var body: some View {
         List {

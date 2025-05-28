@@ -1,12 +1,12 @@
-import SwiftUI
+import Observation
 
-@MainActor
-final class VehicleViewModel: ObservableObject {
-    @Published var vehicleSummary: VehicleSummary?
-    @Published var nationalVignetteOptions: [NationalVignetteOption] = []
-    @Published var countyVignetteOptions: [CountyVignetteOption] = []
-    @Published var errorMessage: String?
-    @Published var currentlySelectedNationalVignetteOptionID: String?
+@Observable
+final class VehicleViewModel {
+    var vehicleSummary: VehicleSummary?
+    var nationalVignetteOptions: [NationalVignetteOption] = []
+    var countyVignetteOptions: [CountyVignetteOption] = []
+    var errorMessage: String?
+    var currentlySelectedNationalVignetteOptionID: String?
     
     var defaultOptionID: String? {
         nationalVignetteOptions.first?.id

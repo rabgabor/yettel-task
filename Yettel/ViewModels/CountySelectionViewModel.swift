@@ -1,9 +1,9 @@
-import SwiftUI
+import Observation
 
-@MainActor
-final class CountySelectionViewModel: ObservableObject {
-    @Published private(set) var options: [CountyVignetteOption]
-    @Published var selectedIDs: Set<String> = []
+@Observable
+final class CountySelectionViewModel {
+    private(set) var options: [CountyVignetteOption]
+    var selectedIDs: Set<String> = []
     
     let plate: String
     

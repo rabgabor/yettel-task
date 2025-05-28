@@ -1,7 +1,8 @@
-import SwiftUI
+import Foundation
+import Observation
 
-@MainActor
-final class PurchaseViewModel: ObservableObject {
+@Observable
+final class PurchaseViewModel {
     
     struct Row: Identifiable {
         let id    = UUID()
@@ -17,9 +18,9 @@ final class PurchaseViewModel: ObservableObject {
     var plateText: String { vehiclePlate }
     var typeText:  String { vignetteTypeText }
 
-    @Published var isBusy = false
-    @Published var showSuccess = false
-    @Published var errorMessage: String?
+    var isBusy = false
+    var showSuccess = false
+    var errorMessage: String?
 
     var rows: [Row] {
         selectedVignettes.enumerated().map { idx, vignette in
