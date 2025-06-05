@@ -10,7 +10,7 @@ struct VehicleSummaryRow: View {
                 .foregroundStyle(.tint)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(vehicleSummary.plate)
+                Text(vehicleSummary.plateText)
                     .font(.headline)
                 Text(vehicleSummary.ownerName)
                     .font(.subheadline)

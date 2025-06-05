@@ -1,4 +1,5 @@
 import Observation
+import SwiftUI
 
 @Observable
 final class VehicleViewModel {
@@ -16,24 +17,22 @@ final class VehicleViewModel {
         nationalVignetteOptions.first(where: { $0.id == currentlySelectedNationalVignetteOptionID })
     }
     
-    private let api: HighwayAPIService
+    var apiService: HighwayAPIService? = nil
     private(set) var initialFetch = true
     
-    init(api: HighwayAPIService = HighwayAPIClient()) {
-        self.api = api
-    }
-    
     func initialLoad() async {
-        guard initialFetch else { return }
-        initialFetch = false
+        guard initialFetch, apiService != nil else { return }
         
         await load()
+        initialFetch = false
     }
     
     func load() async {
+        guard let apiService = apiService else { return }
+        
         do {
-            async let vehicleResponse  = api.fetchVehicleInfo()
-            async let highwayResponse  = api.fetchHighwayInfo()
+            async let vehicleResponse  = apiService.fetchVehicleInfo()
+            async let highwayResponse  = apiService.fetchHighwayInfo()
             
             let (vehicle, highway) = try await (vehicleResponse, highwayResponse)
             

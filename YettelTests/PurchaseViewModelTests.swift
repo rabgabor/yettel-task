@@ -21,30 +21,25 @@ final class PurchaseViewModelTests: XCTestCase {
         }
     }
 
-    private let nationalVignette = NationalVignetteOption(
-        id: "CAR-DAY",
-        code: "D1",
-        duration: "Napi",
-        sum: 5_000,
-        trxFee: 150,
-        vehicleCategory: "CAR",
-        vignetteType: "DAY"
-    )
+    private let nationalVignette = NationalVignetteOption(id: "CAR-DAY",
+                                                          code: "D1",
+                                                          duration: "Napi",
+                                                          sum: 5_000,
+                                                          trxFee: 150,
+                                                          vehicleCategory: "CAR",
+                                                          vignetteType: "DAY")
     
-    private let countyVignette = CountyVignetteOption(
-        id: "YEAR_11",
-        countyName: "Bács-Kiskun",
-        sum: 49_000,
-        trxFee: 200,
-        vehicleCategory: "CAR"
-    )
+    private let countyVignette = CountyVignetteOption(id: "YEAR_11",
+                                                      countyName: "Bács-Kiskun",
+                                                      sum: 49_000,
+                                                      trxFee: 200,
+                                                      vehicleCategory: "CAR")
 
     func testCalculations_areCorrect() {
-        let viewModel = PurchaseViewModel(plate: "ABC-123",
+        let viewModel = PurchaseViewModel(vehiclePlateText: "ABC-123",
                                           vignetteTypeText: "Vegyes",
                                           selectedVignettes: [nationalVignette, countyVignette],
-                                          api: SuccessMockService()
-        )
+                                          apiService: SuccessMockService())
         
         XCTAssertEqual(viewModel.totalFee, 350)
         XCTAssertEqual(viewModel.totalSum, 54_000)
@@ -54,11 +49,10 @@ final class PurchaseViewModelTests: XCTestCase {
     }
     
     func testPurchase_setsShowSuccess() async {
-        let viewModel = PurchaseViewModel(plate: "ABC-123",
+        let viewModel = PurchaseViewModel(vehiclePlateText: "ABC-123",
                                           vignetteTypeText: "Országos",
                                           selectedVignettes: [nationalVignette],
-                                          api: SuccessMockService()
-        )
+                                          apiService: SuccessMockService())
         
         await viewModel.purchase()
         XCTAssertTrue(viewModel.showSuccess)
@@ -66,14 +60,26 @@ final class PurchaseViewModelTests: XCTestCase {
     }
     
     func testPurchase_setsErrorOnFailure() async {
-        let viewModel = PurchaseViewModel(plate: "ABC-123",
+        let viewModel = PurchaseViewModel(vehiclePlateText: "ABC-123",
                                           vignetteTypeText: "Országos",
                                           selectedVignettes: [nationalVignette],
-                                          api: FailingMockService()
-        )
+                                          apiService: FailingMockService())
         
         await viewModel.purchase()
         XCTAssertFalse(viewModel.showSuccess)
         XCTAssertNotNil(viewModel.errorMessage)
+    }
+}
+
+extension PurchaseViewModel {
+    convenience init(vehiclePlateText: String,
+                     vignetteTypeText: String,
+                     selectedVignettes: [VignetteOptionProtocol],
+                     apiService: HighwayAPIService) {
+        self.init(vehiclePlateText: vehiclePlateText,
+                  vignetteTypeText: vignetteTypeText,
+                  selectedVignettes: selectedVignettes)
+        
+        self.apiService = apiService
     }
 }

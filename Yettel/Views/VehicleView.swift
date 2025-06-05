@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct ContentView: View {
+struct VehicleView: View {
+    @Environment(\.apiService) private var apiService
     @State private var viewModel = VehicleViewModel()
 
     var body: some View {
@@ -21,7 +22,7 @@ struct ContentView: View {
                         
                         if viewModel.currentlySelectedNationalVignetteOptionID != nil {
                             NavigationLink("Tovább a vásárláshoz") {
-                                PurchaseView(viewModel: PurchaseViewModel(plate: viewModel.vehicleSummary?.plate ?? "",
+                                PurchaseView(viewModel: PurchaseViewModel(vehiclePlateText: viewModel.vehicleSummary?.plateText ?? "",
                                                                           vignetteTypeText: "Országos",
                                                                           selectedVignettes: [viewModel.currentlySelectedNationalVignetteOption!])
                                 )
@@ -34,7 +35,7 @@ struct ContentView: View {
                     Section {
                         NavigationLink("Éves vármegyei matricák") {
                             CountySelectionView(viewModel: CountySelectionViewModel(options: viewModel.countyVignetteOptions,
-                                                                                    plate: viewModel.vehicleSummary?.plate ?? ""))
+                                                                                    plate: viewModel.vehicleSummary?.plateText ?? ""))
                         }
                     }
                 }
@@ -47,9 +48,11 @@ struct ContentView: View {
             .navigationTitle("E-matrica")
             .navigationBarTitleDisplayMode(.large)
             .task {
+                viewModel.apiService = apiService
                 await viewModel.initialLoad()
             }
             .refreshable {
+                guard !viewModel.initialFetch else { return }
                 await viewModel.load()
             }
             .overlay {
@@ -66,6 +69,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .environment(VehicleViewModel(api: MockHighwayService()))
+    VehicleView()
+        .environment(\.apiService, MockHighwayService())
 }

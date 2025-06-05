@@ -2,9 +2,12 @@ import SwiftUI
 
 @main
 struct YettelApp: App {
+    private let apiService = HighwayAPIClient()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            VehicleView()
+                .environment(\.apiService, apiService)
         }
     }
 }

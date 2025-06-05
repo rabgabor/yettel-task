@@ -1,12 +1,12 @@
 struct VehicleSummary {
-    let plate: String
+    let plateText: String
     let ownerName: String
     let iconName: String
 }
 
 extension VehicleSummary {
     init(response: VehicleInfoResponse) {
-        self.plate = response.plate.uppercased()
+        self.plateText = response.plate.uppercased()
         self.ownerName = response.name
         self.iconName = VehicleSummary.icon(for: response.type)
     }
@@ -27,7 +27,7 @@ extension VehicleSummary {
 
 #if DEBUG
 extension VehicleSummary {
-    static let sample = VehicleSummary(plate: "ABC-123",
+    static let sample = VehicleSummary(plateText: "ABC-123",
                                        ownerName: "Michael Scott",
                                        iconName: "car.fill")
 }

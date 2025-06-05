@@ -5,19 +5,16 @@ import Observation
 final class PurchaseViewModel {
     
     struct Row: Identifiable {
-        let id    = UUID()
+        let id = UUID()
         let title: String
         let price: String
     }
     
-    private let api: HighwayAPIService
-    private let vehiclePlate: String
-    private let vignetteTypeText: String
+    var apiService: HighwayAPIService?
+    private(set) var vehiclePlateText: String
+    private(set) var vignetteTypeText: String
     private let selectedVignettes: [any VignetteOptionProtocol]
     
-    var plateText: String { vehiclePlate }
-    var typeText:  String { vignetteTypeText }
-
     var isBusy = false
     var showSuccess = false
     var errorMessage: String?
@@ -43,18 +40,17 @@ final class PurchaseViewModel {
         priceString(totalSum)
     }
 
-    init(plate: String,
+    init(vehiclePlateText: String,
          vignetteTypeText: String,
-         selectedVignettes: [VignetteOptionProtocol],
-         api: HighwayAPIService = HighwayAPIClient()) {
-        self.vehiclePlate      = plate
-        self.vignetteTypeText  = vignetteTypeText
+         selectedVignettes: [VignetteOptionProtocol]) {
+        self.vehiclePlateText = vehiclePlateText
+        self.vignetteTypeText = vignetteTypeText
         self.selectedVignettes = selectedVignettes
-        self.api = api
     }
 
     func purchase() async {
-        guard !isBusy else { return }
+        guard !isBusy, let apiService = apiService else { return }
+        
         isBusy = true
         defer { isBusy = false }
 
@@ -64,7 +60,7 @@ final class PurchaseViewModel {
                       category: VehicleCategory(rawValue: $0.vehicleCategory)!,
                       cost: $0.sum)})
             
-            _ = try await api.placeHighwayOrder(order)
+            _ = try await apiService.placeHighwayOrder(order)
             showSuccess = true
         } catch {
             errorMessage = error.localizedDescription

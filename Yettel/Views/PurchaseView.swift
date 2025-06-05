@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PurchaseView: View {
+    @Environment(\.apiService) private var apiService
     @State var viewModel: PurchaseViewModel
 
     var body: some View {
@@ -23,6 +24,9 @@ struct PurchaseView: View {
                 viewModel.showSuccess = false
             }
         }
+        .onAppear {
+            viewModel.apiService = apiService
+        }
     }
 
     private var headerSection: some View {
@@ -30,13 +34,13 @@ struct PurchaseView: View {
             HStack {
                 Text("Rendszám")
                 Spacer()
-                Text(viewModel.plateText)
+                Text(viewModel.vehiclePlateText)
             }
             
             HStack {
                 Text("Matrica típusa")
                 Spacer()
-                Text(viewModel.typeText)
+                Text(viewModel.vignetteTypeText)
             }
         }
     }
@@ -94,7 +98,7 @@ private let sampleNational = NationalVignetteOption(id: "CAR-WEEK",
 struct PurchaseView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            PurchaseView(viewModel: PurchaseViewModel(plate: "ABC-123",
+            PurchaseView(viewModel: PurchaseViewModel(vehiclePlateText: "ABC-123",
                                                       vignetteTypeText: "Országos",
                                                       selectedVignettes: [sampleNational])
             )

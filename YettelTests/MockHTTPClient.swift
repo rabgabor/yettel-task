@@ -13,12 +13,11 @@ final class MockHTTPClient: HTTPClient {
     
     func perform(request: URLRequest) async throws -> (Data, URLResponse) {
         lastRequest = request
-        let resp = HTTPURLResponse(
-            url: request.url!,
-            statusCode: nextStatus,
-            httpVersion: nil,
-            headerFields: nil
-        )!
-        return (nextData, resp)
+        let response = HTTPURLResponse(url: request.url!,
+                                       statusCode: nextStatus,
+                                       httpVersion: nil,
+                                       headerFields: nil)!
+        
+        return (nextData, response)
     }
 }

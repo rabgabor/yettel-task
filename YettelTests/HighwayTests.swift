@@ -13,7 +13,7 @@ final class HighwayTests: XCTestCase {
         
         let summary = VehicleSummary(response: response)
         
-        XCTAssertEqual(summary.plate, "XYZ-987")
+        XCTAssertEqual(summary.plateText, "XYZ-987")
         XCTAssertEqual(summary.ownerName, "Pam Beesly")
         XCTAssertEqual(summary.iconName, "car.fill")
     }
@@ -35,11 +35,11 @@ final class HighwayTests: XCTestCase {
     
     @MainActor
     func testLoadPopulatesState() async throws {
-        let viewModel = VehicleViewModel(api: MockHighwayService())
+        let viewModel = VehicleViewModel(apiService: MockHighwayService())
         
         await viewModel.load()
         
-        XCTAssertEqual(viewModel.vehicleSummary?.plate, "ABC-123")
+        XCTAssertEqual(viewModel.vehicleSummary?.plateText, "ABC-123")
         XCTAssertEqual(viewModel.nationalVignetteOptions.count, 1)
         XCTAssertEqual(viewModel.countyVignetteOptions.first?.countyName, "Bács-Kiskun")
     }
@@ -52,8 +52,8 @@ final class HighwayTests: XCTestCase {
                                        sum: 9_000)
 
         let option = CountyVignetteOption.from(response,
-                                            countyName: "Bács-Kiskun",
-                                            overrideID: "YEAR_11")
+                                               countyName: "Bács-Kiskun",
+                                               overrideID: "YEAR_11")
 
         XCTAssertEqual(option.id, "YEAR_11")
         XCTAssertEqual(option.countyName, "Bács-Kiskun")
@@ -88,5 +88,12 @@ final class HighwayTests: XCTestCase {
         viewModel.toggle("YEAR_13")
         XCTAssertFalse(viewModel.hasIsolatedSelection)
         XCTAssertEqual(viewModel.totalPrice, 18_000)
+    }
+}
+
+extension VehicleViewModel {
+    convenience init(apiService: HighwayAPIService) {
+        self.init()
+        self.apiService = apiService
     }
 }

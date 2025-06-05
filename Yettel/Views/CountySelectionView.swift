@@ -71,7 +71,7 @@ private extension CountySelectionView {
             }
             NavigationLink("Tovább a vásárláshoz") {
                 PurchaseView(
-                    viewModel: PurchaseViewModel(plate: viewModel.plate,
+                    viewModel: PurchaseViewModel(vehiclePlateText: viewModel.plate,
                                                  vignetteTypeText: "Éves vármegyei",
                                                  selectedVignettes: viewModel.selectedIDs
                         .compactMap { id in
