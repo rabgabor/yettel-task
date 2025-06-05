@@ -40,8 +40,8 @@ struct VehicleView: View {
                     }
                 }
                 
-                if let err = viewModel.errorMessage {
-                    Section { Text("Hiba: \(err)").foregroundStyle(.red) }
+                if let error = viewModel.errorMessage {
+                    Section { Text("Hiba: \(error)").foregroundStyle(.red) }
                 }
             }
             .listStyle(.insetGrouped)
